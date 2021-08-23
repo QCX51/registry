@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    
+	  <title>Proyecto Final</title>
+    <!-- Bootstrap -->
+	<link href="css/bootstrap.css" rel="stylesheet"/>
+	<link href="css/style.css" rel="stylesheet"/>
+    <link href="css/butterfly.css" rel="stylesheet"/>
+    <link href="css/butterfly2.css" rel="stylesheet"/>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-auth.js"></script>
+<style>
+.column {
+/*  background-color: white;
+    background-clip: border-box;
+    border-radius: 15px;
+    border: 1px solid  rgba(0,0,0,0.20);
+    box-shadow: 0px 0px 15px 1px rgba(0,0,0,0.25), inset 0px 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border-collapse: separate;*/
+    float: left;
+    width: 50%;
+    padding: 40px;
+}
+.row: after {
+    display: table-column;
+    background-color: aqua;
+}
+
+#formulario:hover
+{
+box-shadow: 0px 0px 15px 8px rgba(21,62,255,0.30);
+}
+#mapas:hover
+{
+box-shadow: 0px 0px 15px 8px rgba(21,62,255,0.30);
+}
+
+#menu{
+display: none;
+margin: auto auto auto auto;
+}
+/* The Modal (background) */
+.modal
+	{
+		display:block;
+		overflow: auto;
+		background-color: rgb(0,0,0); /* Fallback color */
+		background-color: rgba(21,62,255,0.10);
+		padding: 0.8%;
+	}
+    #contenido
+    {
+    width: 350px;
+    }
+/* Modal Content/Box */
+.modal-content
+	{
+    box-shadow: 0px 0px 15px 8px rgba(21,62,255,0.30);
+		background-color: cornflowerblue;
+		margin: 0 auto 0 auto;
+		border: 1px solid #0000FF;
+		
+		padding: 30px 60px 30px 60px;
+	}
+</style>
+	</head>
+	<body>
+		
+		<div id="container">
+		<div id="butterfly">
+        <div id="leftwing">
+        </div>
+        <div id="rightwing">
+        </div>
+		</div>
+	</div>
+	
+	<div class="butterfly" >
+    <div class="wing">
+        <div class="bit"></div>
+        <div class="bit"></div>
+    </div>
+    <div class="wing">
+        <div class="bit"></div>
+        <div class="bit"></div>
+    </div>
+</div>
+<div class="shadow"></div>
+
+
+		
+<div class="modal">
+<div id="contenido" class="modal-content" style="background-color: black; background: rgba(0, 0, 0, 0.45); height: 100%;" >
+
+<div id="menu">
+<div class="container">
+<h3 id="usuario"></h3>
+<br/>
+<div class="row">
+
+<div id="formulario" class="column">
+<center><h2>Form</h2></center>
+<br/>
+<center><a href="form.html"><img src="images/form-icon.png" width="100px" alt="form"/></a></center>
+</div>
+
+<div id="mapas" class="column">
+<center><h2>Maps</h2></center>
+<br/>
+<center><a href="maps.html"><img src="images/location-map.png" width="100px" alt="maps"/></a></center>
+</div>
+
+</div>
+</div><!--container-->
+</div>
+
+<form id="login" name="login" action="index.html" method="get" role="form">
+<center><img class="imagen" src="images/avatar.png" alt="avatar"/></center>
+<div id="login-content">
+<h4>Login</h4>
+</div>
+
+<div class="container">
+<center>
+<label for="uname"><b>E-Mail</b></label>
+<input id="email" class="form-control" type="email" placeholder="Email" name="uname" required>
+
+<label for="psw"><b>Contraseña</b></label>
+<input id="password" class="form-control" type="password" placeholder="Contraseña" name="psw" required>
+<br/>
+<div class="container">
+<button class="form-control btn btn-primary" type="submit">Login</button>
+</div>
+</center>
+</div>
+</form>
+
+
+</div>
+</div>
+<script>
+// Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyAMDQInFBKqYUHPdfg2GN57yv_MWK_H7BI",
+    authDomain: "projecto-final-99028.firebaseapp.com",
+    databaseURL: "https://projecto-final-99028.firebaseio.com",
+    projectId: "projecto-final-99028",
+    storageBucket: "projecto-final-99028.appspot.com",
+    messagingSenderId: "864446602626",
+    appId: "1:864446602626:web:8fd3b46760829ef33d039b"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database(); // -> Realtime Database
+  const dbRef = db.ref('usuarios'); // referencia
+  
+function SignOut()
+{
+firebase.auth().currentUser.signOut();
+}
+firebase.auth().onAuthStateChanged(function(user) {
+if (user) {
+document.getElementById('login').style.display='none';
+document.getElementById('contenido').style.width='700px';
+document.getElementById('menu').style.display='block';
+document.getElementById('usuario').innerHTML = `Bienvenid@: ${user.email}`;
+} else {
+// No user is signed in.
+}
+});
+
+  
+document.addEventListener('submit', async (e) =>
+{
+
+e.preventDefault();
+let email, password;
+email = document.getElementById('email').value;
+password = document.getElementById('password').value;
+
+firebase.auth().signInWithEmailAndPassword(email, password)
+.then((user) => {
+document.getElementById('login').style.display='none';
+document.getElementById('contenido').style.width='700px';
+document.getElementById('menu').style.display='block';
+document.getElementById('usuario').innerHTML = `Bienvenid@: ${email}`;
+})
+.catch((error) => {
+switch(error.code)
+{
+case "auth/user-not-found":
+if (confirm("El correo que ingresaste aun no ha sido registrado\nDeseas registrarte ahora?"))
+{
+firebase.auth().createUserWithEmailAndPassword(email, password)
+.then((user) => {
+alert("El email: " + email + "\nSe ha registrado con exito!");
+})
+.catch((error) =>
+{
+switch (error.code)
+{
+case "auth/invalid-email":
+alert("El email que ingresaste no es valido.");
+break;
+case "auth/weak-password":
+alert("La contraseña que ingresaste es muy debil\n");
+break;
+}
+});
+} //End Confirm
+break;
+case "auth/wrong-password":
+alert("La contraseña que ingresaste no es valida\n");
+break;
+default:
+alert(error.code);
+break;
+}
+
+
+});
+
+});
+</script>
+</body>
+</html>

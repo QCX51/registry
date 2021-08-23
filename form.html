@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    
+	  <title>Proyecto Final</title>
+    <!-- Bootstrap -->
+	<link href="css/bootstrap.css" rel="stylesheet"/>
+	<link href="css/style.css" rel="stylesheet"/>
+    <link href="css/butterfly.css" rel="stylesheet"/>
+    <link href="css/butterfly2.css" rel="stylesheet"/>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-database.js"></script>
+<style>
+.column {
+/*  background-color: white;
+    background-clip: border-box;
+    border-radius: 15px;
+    border: 1px solid  rgba(0,0,0,0.20);
+    box-shadow: 0px 0px 15px 1px rgba(0,0,0,0.25), inset 0px 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border-collapse: separate;*/
+    float: left;
+    width: 50%;
+    padding: 0px;
+}
+.row: after {
+    display: table;
+}
+.forma {
+    color: white;
+    background-color: rgba(0,107,252,0.50);
+    border-radius: 15px;
+    border: 1px solid  rgba(0,0,0,0.20);
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.25), inset 0px 0px 5px 4px rgba(0, 0, 0, 0.10);
+    padding: 30px;
+    margin: 10px auto 10px auto;
+    width: 300px;
+    overflow: auto;
+}
+.lista {
+    margin: 0px auto 0px auto;
+    width: 100%;
+}
+table
+{
+    border-collapse: separate;
+    margin: 0px auto 0px auto;
+    border: 1px solid  rgba(0,0,0,0.20);
+    /*border: none;*/
+}
+th, td {
+    text-align: center;
+    padding: 4px;
+    border: 1px solid  rgba(0,0,0,0.20);
+    border-style: inset;
+}
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+td {
+    background-color: dodgerblue;
+    color: white;
+}
+/* The Modal (background) */
+.modal
+	{
+		display:block;
+		overflow: auto;
+		background-color: rgb(0,0,0); /* Fallback color */
+		background-color: rgba(21,62,255,0.10);
+		
+	}
+    #contenido
+    {
+    width: 95%;
+    }
+/* Modal Content/Box */
+.modal-content
+	{
+    box-shadow: 0px 0px 15px 8px rgba(21,62,255,0.30);
+		background-color: cornflowerblue;
+		margin: 0 auto 0 auto;
+		border: 1px solid #0000FF;
+		
+		
+	}
+</style>
+	</head>
+	<body>
+		
+		<div id="container">
+		<div id="butterfly">
+        <div id="leftwing">
+        </div>
+        <div id="rightwing">
+        </div>
+		</div>
+	</div>
+	
+	<div class="butterfly" >
+    <div class="wing">
+        <div class="bit"></div>
+        <div class="bit"></div>
+    </div>
+    <div class="wing">
+        <div class="bit"></div>
+        <div class="bit"></div>
+    </div>
+</div>
+
+
+		
+<div class="modal">
+<div id="contenido" class="modal-content" style="background-color: black; background: rgba(0, 0, 0, 0.45); height: 100%;" >
+
+
+<div class="container">
+<h3>Firebase (Realtime Database)</h3>
+
+<div class="row">
+<div class="column">
+<center><h2>Formulario</h2></center>
+<form name="form" action="form.html" id="form" method="GET" class="forma">
+
+<div class="form-group">
+<label for="nombre">Nombre</label>
+<input type="text" class="form-control" id="nombre" placeholder="Nombre" required>
+</div>
+
+<div class="form-group">
+<label>Nombre de equipo</label>
+<input type="text" class="form-control" id="equipo" placeholder="Equipo" required>
+</div>
+
+<div class="form-group">
+<label>Grado/Grupo</label>
+<input type="text" class="form-control" id="grupo" placeholder="Grado/Grupo" required>
+</div>
+
+<div class="form-group">
+<label>No. Integrantes</label>
+<input type="number" class="form-control" id="integrantes" placeholder="No. Integrantes" required>
+</div>
+
+<center>
+<button name="save" type="submit" id="save" class="btn btn-primary btn-success">Guardar</button>
+</center>
+</form>
+</div>
+
+<div class="column">
+<div class="lista">
+<center><h2>Registro</h2></center>
+<div id="tabla">
+    <table id="tabs">
+    <tr>
+    <th width="25%"><strong>Nombre</strong></th>
+    <th width="25%"><strong>Equipo</strong></th>
+    <th width="auto"><strong>Grado/Grupo</strong></th>
+    <th width="auto"><strong>No. Integrantes</strong></th>
+    <th width="auto"><strong></strong></th>
+    <th width="auto"><strong></strong></th>
+    </tr>
+    </table>
+</div>
+</div>
+</div>
+
+
+</div>
+
+</div>
+
+
+</div>
+</div>
+<script>
+// Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyAMDQInFBKqYUHPdfg2GN57yv_MWK_H7BI",
+    authDomain: "projecto-final-99028.firebaseapp.com",
+    databaseURL: "https://projecto-final-99028.firebaseio.com",
+    projectId: "projecto-final-99028",
+    storageBucket: "projecto-final-99028.appspot.com",
+    messagingSenderId: "864446602626",
+    appId: "1:864446602626:web:8fd3b46760829ef33d039b"
+  };
+  
+
+firebase.initializeApp(firebaseConfig);
+const RealtimeDB = firebase.database(); // -> Realtime Database
+const dbRef = RealtimeDB.ref('Usuarios'); // referencia
+var lastID = '';
+
+function getData()
+{
+    let data =
+    {
+        Nombre: document.getElementById('nombre').value,
+        Equipo: document.getElementById('equipo').value,
+        Grupo: document.getElementById('grupo').value,
+        Integrantes: parseInt(document.getElementById('integrantes').value)
+    }
+    return data;
+}
+// Event Listener
+// Se dispara cuando se carga la pagina y cuando se agrega un nuevo elemento
+// a la base de datos
+dbRef.on('child_added', function(child)
+{
+let tab;
+tab = document.getElementById('tabs');
+tab.innerHTML += `
+    <tr>
+    <td>${child.val().Nombre}</td>
+    <td>${child.val().Equipo}</td>
+    <td>${child.val().Grupo}</td>
+    <td>${child.val().Integrantes}</td>
+    <td><button type="button" data-id="${child.key}" class="btn-delete btn btn-primary btn-danger">Borrar</button></td>
+    <td><button type="button" data-id="${child.key}" class="btn-update btn btn-dark">Actualizar</button></td>
+    </tr>
+    `;
+
+const btns = document.querySelectorAll('.btn-delete');
+const btn_update = document.querySelectorAll('.btn-update');
+btns.forEach(btn =>
+{
+btn.addEventListener('click', (e) => {
+deleteDB(e.target.getAttribute('data-id'));
+});
+});
+
+btn_update.forEach(btn =>
+{
+btn.addEventListener('click', (e) => {
+llenarDatos(e.target.getAttribute('data-id'));
+//updateDB(e.target.getAttribute('data-id'), getData());
+});
+});
+
+});
+// Event Listener
+// Se dispara cuando se cuando se modifica un elemento
+// de la base de datos
+dbRef.on('child_changed', function(child)
+{
+  //alert('changed: ' + child.key);
+  readDBOnce();
+});
+// Event Listener
+// Se dispara cuando se cuando se elimina un elemento
+// de la base de datos
+dbRef.on('child_removed', function(child)
+{
+  //alert('removed: ' + child.key);
+  readDBOnce();
+});
+// Event Listener
+// Se dispara cuando se cuando se mueve un elemento
+// de la base de datos
+dbRef.on('child_moved', function(child)
+{
+  //alert('moved: ' + child.key);
+});
+// Funcion
+// Perimite escribir un nuevo elemento en la referencia
+// especificada de la base de datos
+function writeDB(data)
+{
+dbRef.push().set(data)
+.then(function(){
+    ///alert('El elemento se ha almacenado correctamente');
+})
+.catch(function(error){
+    alert('ocurrio un error al almecenar los datos\nError: ' + error);
+});
+}
+// Funcion
+// Perimite remover un elemento en la referencia
+// especificada de la base de datos mediante un ID
+function deleteDB(id)
+{
+dbRef.child(id).remove()
+.then(function (){
+    //alert('El elemento se ha borrado correctamente');
+})
+.catch(function (error){
+    alert('ocurrio un error al intentar borrar el elemento\nError: ' + error);
+});
+}
+// Funcion
+// Perimite modificar un elemento en la referencia
+// especificada de la base de datos mediante un ID
+function updateDB(id, data)
+{
+dbRef.child(id).update(data)
+.then(function (){
+    //alert('El elemento se ha actualizado correctamente');
+})
+.catch(function (error){
+    alert('Ocurrio un error al intentar actulizar el elemento\nError: ' + error);
+});
+}
+// Funcion
+// Perimite leer un elemento de la referencia
+// especificada de la base de datos mediante un ID
+async function readOnce(id)
+{
+let data;
+await dbRef.child(id).once('value').then(function(snapshot) {
+data = snapshot.val();
+});
+return data;
+}
+// Funcion
+// Perimite leer todos elementos de la referencia
+// especificada de la base de datos
+async function readDBOnce()
+{
+let tab = document.getElementById('tabla');
+tab.innerHTML = `
+    <table id="tabs">
+    <tr>
+    <th width="30%"><strong>Nombre</strong></th>
+    <th width="30%"><strong>Equipo</strong></th>
+    <th width="auto"><strong>Grado/Grupo</strong></th>
+    <th width="auto"><strong>No. Integrantes</strong></th>
+    <th width="auto"><strong></strong></th>
+    <th width="auto"><strong></strong></th>
+    </tr>
+    </table>
+`;
+
+
+tab = document.getElementById('tabs');
+await dbRef.once('value').then(function(snapshot) {
+//alert('Key: ' + snapshot.key);
+snapshot.forEach(function(child) {
+    tab.innerHTML += `
+    <tr>
+    <td>${child.val().Nombre}</td>
+    <td>${child.val().Equipo}</td>
+    <td>${child.val().Grupo}</td>
+    <td>${child.val().Integrantes}</td>
+    <td><button type="button" data-id="${child.key}" class="btn-delete btn btn-primary btn-danger">Borrar</button></td>
+    <td><button type="button" data-id="${child.key}" class="btn-update btn btn-dark">Actualizar</button></td>
+    </tr>
+    `;
+});
+});
+const btns = document.querySelectorAll('.btn-delete');
+const btn_update = document.querySelectorAll('.btn-update');
+btns.forEach(btn =>
+{
+btn.addEventListener('click', (e) => {
+deleteDB(e.target.getAttribute('data-id'));
+});
+});
+
+btn_update.forEach(btn =>
+{
+btn.addEventListener('click', (e) => {
+llenarDatos(e.target.getAttribute('data-id'));
+});
+});
+}
+
+
+function llenarDatos(id)
+{
+lastID = id;
+dbRef.child(id).once('value').then(function(snapshot) {
+//alert('Key: ' + snapshot.key);
+document.getElementById('nombre').value = snapshot.val().Nombre;
+document.getElementById('equipo').value = snapshot.val().Equipo;
+document.getElementById('grupo').value = snapshot.val().Grupo;
+document.getElementById('integrantes').value = parseInt(snapshot.val().Integrantes);
+
+});
+}
+
+
+let targetID = '';
+window.addEventListener('DOMContentLoaded', (e) =>
+{
+const btns = document.querySelectorAll('button');
+    btns.forEach(btn =>
+    {
+    btn.addEventListener('click', (e) => {
+    targetID = e.target.id;
+    });
+    });
+});
+
+document.addEventListener('submit', async (e) =>
+{
+    e.preventDefault();
+    switch (targetID)
+    {
+    case 'save':
+    if (lastID == '') await writeDB(getData());
+    else
+    {
+    await updateDB(lastID, getData());
+    lastID = '';
+    }
+    break;
+    }
+});
+</script>
+</body>
+</html>
